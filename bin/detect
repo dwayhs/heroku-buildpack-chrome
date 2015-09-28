@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "Chrome"
+exit 0
