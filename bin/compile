@@ -27,8 +27,8 @@ APT_OPTIONS="-o debug::nolocking=true -o dir::cache=$APT_CACHE_DIR -o dir::state
 topic "Updating apt caches"
 apt-get $APT_OPTIONS update | indent
 
-topic "Fetching .debs for xvfb"
-apt-get $APT_OPTIONS -y -d install xvfb | indent
+topic "Fetching .debs for xvfb and unzip"
+apt-get $APT_OPTIONS -y -d install xvfb unzip | indent
 
 topic "Fetching google chrome"
 CHROME_URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
@@ -40,3 +40,15 @@ for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   topic "Installing $(basename $DEB)"
   dpkg -x $DEB $BUILD_DIR/.apt/
 done
+
+topic "Install chromedriver"
+CHROME_DRIVER_URL = "http://chromedriver.storage.googleapis.com/2.10/chromedriver_linux64.zip"
+curl $CHROME_DRIVER_URL -s -o $CACHE_DIR/chromedriver.zip
+
+unzip $CACHE_DIR/chromedriver.zip -d $CACHE_DIR
+
+chmod +x $CACHE_DIR/chromedriver
+mv -f $CACHE_DIR/chromedriver /usr/local/share/chromedriver
+
+ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
