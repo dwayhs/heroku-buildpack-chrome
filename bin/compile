@@ -16,6 +16,9 @@ indent() {
   sed -u 's/^/       /'
 }
 
+topic "BUILD_DIR: $BUILD_DIR"
+topic "CACHE_DIR: $CACHE_DIR"
+
 APT_CACHE_DIR="$CACHE_DIR/apt/cache"
 APT_STATE_DIR="$CACHE_DIR/apt/state"
 
@@ -42,14 +45,21 @@ for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
 done
 
 topic "Downloading and installing ChromeDriver to ${BUILD_DIR}"
+mkdir -p "$BUILD_DIR/vendor/chromedriver/"
+mkdir -p "$BUILD_DIR/vendor/chromedriver/bin"
+export PATH="$BUILD_DIR/vendor/chromedriver/bin":$PATH
+
 chromedriver_url="http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip"
-mkdir -p $BUILD_DIR/vendor
-curl $chromedriver_url -s -o $BUILD_DIR/vendor/chromedriver.zip
-unzip $BUILD_DIR/vendor/chromedriver.zip
-rm $BUILD_DIR/vendor/chromedriver.zip
+curl $chromedriver_url -s -o "$BUILD_DIR/vendor/chromedriver/chromedriver.zip"
+unzip "$BUILD_DIR/vendor/chromedriver/chromedriver.zip"
+rm "$BUILD_DIR/vendor/chromedriver/chromedriver.zip"
+mv "$BUILD_DIR/vendor/chromedriver/chromedriver" "$BUILD_DIR/vendor/chromedriver/bin"
 
 topic "exporting PATH and LIBRARY_PATH"
 PROFILE_PATH="$BUILD_DIR/.profile.d/chrome.sh"
 mkdir -p $(dirname $PROFILE_PATH)
-echo 'export PATH="$PATH:vendor"' >> $PROFILE_PATH
-echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:vendor"' >> $PROFILE_PATH
+echo 'export PATH="\$HOME/.apt/usr/bin:\$HOME/vendor/chromedriver/bin:$PATH"'>> $PROFILE_PATH
+echo 'export LD_LIBRARY_PATH="\$HOME/.apt/usr/lib:\$LD_LIBRARY_PATH"'>> $PROFILE_PATH
+echo 'export INCLUDE_PATH="\$HOME/.apt/usr/include:\$INCLUDE_PATH"'>> $PROFILE_PATH
+echo 'export CPATH="\$INCLUDE_PATH"'>> $PROFILE_PATH
+echo 'export CPPPATH="\$INCLUDE_PATH"'>> $PROFILE_PATH
