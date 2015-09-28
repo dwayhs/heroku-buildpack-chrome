@@ -41,14 +41,18 @@ for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   dpkg -x $DEB $BUILD_DIR/.apt/
 done
 
-topic "Install chromedriver"
-CHROME_DRIVER_URL="http://chromedriver.storage.googleapis.com/2.10/chromedriver_linux64.zip"
-curl $CHROME_DRIVER_URL -s -o $CACHE_DIR/chromedriver.zip
+topic "Downloading and installing ChromeDriver"
+chromedriver_url="http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip"
+curl $chromedriver_url -s -o $BUILD_DIR/vendor/selenium/bin/chromedriver.zip
+unzip $BUILD_DIR/vendor/selenium/bin/chromedriver.zip
+rm $BUILD_DIR/vendor/selenium/bin/chromedriver.zip
 
-unzip $CACHE_DIR/chromedriver.zip -d $CACHE_DIR
-
-chmod +x $CACHE_DIR/chromedriver
-mv -f $CACHE_DIR/chromedriver /usr/local/share/chromedriver
-
-ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
+topic "Writing profile script"
+mkdir -p $BUILD_DIR/.profile.d
+cat <<EOF >$BUILD_DIR/.profile.d/000_apt.sh
+export PATH="\$HOME/.apt/usr/bin:\$HOME/vendor/selenium/bin:$PATH"
+export LD_LIBRARY_PATH="\$HOME/.apt/usr/lib:\$LD_LIBRARY_PATH"
+export INCLUDE_PATH="\$HOME/.apt/usr/include:\$INCLUDE_PATH"
+export CPATH="\$INCLUDE_PATH"
+export CPPPATH="\$INCLUDE_PATH"
+EOF
