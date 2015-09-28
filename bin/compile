@@ -41,7 +41,7 @@ for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   dpkg -x $DEB $BUILD_DIR/.apt/
 done
 
-topic "Downloading and installing ChromeDriver"
+topic "Downloading and installing ChromeDriver to ${BUILD_DIR}"
 chromedriver_url="http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip"
 curl $chromedriver_url -s -o $BUILD_DIR/vendor/selenium/bin/chromedriver.zip
 unzip $BUILD_DIR/vendor/selenium/bin/chromedriver.zip
