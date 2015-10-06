@@ -58,8 +58,8 @@ mv "$BUILD_DIR/vendor/chromedriver/chromedriver" "$BUILD_DIR/vendor/chromedriver
 topic "exporting PATH and LIBRARY_PATH"
 PROFILE_PATH="$BUILD_DIR/.profile.d/chrome.sh"
 mkdir -p $(dirname $PROFILE_PATH)
-echo 'export PATH="\$HOME/.apt/usr/bin:\$HOME/vendor/chromedriver/bin:$PATH"'>> $PROFILE_PATH
-echo 'export LD_LIBRARY_PATH="\$HOME/.apt/usr/lib:\$LD_LIBRARY_PATH"'>> $PROFILE_PATH
-echo 'export INCLUDE_PATH="\$HOME/.apt/usr/include:\$INCLUDE_PATH"'>> $PROFILE_PATH
+echo 'export PATH=".apt/usr/bin:vendor/chromedriver/bin:$PATH"'>> $PROFILE_PATH
+echo 'export LD_LIBRARY_PATH=".apt/usr/lib:\$LD_LIBRARY_PATH"'>> $PROFILE_PATH
+echo 'export INCLUDE_PATH=".apt/usr/include:\$INCLUDE_PATH"'>> $PROFILE_PATH
 echo 'export CPATH="\$INCLUDE_PATH"'>> $PROFILE_PATH
 echo 'export CPPPATH="\$INCLUDE_PATH"'>> $PROFILE_PATH
